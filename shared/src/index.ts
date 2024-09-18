@@ -1,1 +1,1 @@
-export * from "./types/Expense";
+export * from "./types/Transaction";

@@ -2,7 +2,7 @@
 
 ## Pre-requisites:
 
-| Node version | NPM version |
+| node version | npm version |
 | ------------ | ----------- |
 | 20.17.0      | 10.8.2      |
 
