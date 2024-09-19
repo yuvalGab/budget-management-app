@@ -1,16 +1,33 @@
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { Button, Flex, Table, Typography } from "antd";
+import { Button, Flex, Table, Tooltip, Typography } from "antd";
 import { Transaction, TransactionType } from "shared";
 import transactionStore from "../store/transaction";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { RoutePath } from "./AppRouter";
+import { PlusOutlined } from "@ant-design/icons";
+import TransactionModal, { TransactionModalMode } from "./TransactionModal";
 
 const { Text } = Typography;
 
 function TransactionsTable() {
   const navigate = useNavigate();
+  const [isTransactionModalVisible, setIsTransactionModalVisible] =
+    useState(false);
+  const [transactionModalMode, setTransactionModalMode] = useState(
+    TransactionModalMode.Create
+  );
+  const [selectedRecord, setSelectedRecord] = useState();
+
+  const openTransactionModal = useCallback(
+    (mode: TransactionModalMode, record?: Transaction) => {
+      setTransactionModalMode(mode);
+      setSelectedRecord(record as any);
+      setIsTransactionModalVisible(true);
+    },
+    []
+  );
 
   const columns = useMemo(
     () => [
@@ -54,15 +71,21 @@ function TransactionsTable() {
         title: "Date",
         sorter: (a: Transaction, b: Transaction): number =>
           new Date(a.date).getTime() - new Date(b.date).getTime(),
-        render: (value: string): JSX.Element => {
+        render: (value: string) => {
           return <>{format(value, "dd/LL/yyyy")}</>;
         },
       },
       {
         title: "Actions",
-        render: () => (
+        render: (_value: unknown, record: Transaction) => (
           <>
-            <Button>Edit</Button>
+            <Button
+              onClick={() => {
+                openTransactionModal(TransactionModalMode.Update, record);
+              }}
+            >
+              Edit
+            </Button>
             <Button>Delete</Button>
           </>
         ),
@@ -73,14 +96,29 @@ function TransactionsTable() {
 
   return (
     <>
-      <Flex justify="end">
+      <Flex
+        justify="space-between"
+        align="center"
+        style={{ margin: "16px 0px" }}
+      >
+        <Tooltip title="Create transaction" placement="right">
+          <Button
+            type="primary"
+            shape="circle"
+            size="large"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              openTransactionModal(TransactionModalMode.Create);
+            }}
+          />
+        </Tooltip>
         <Button
-          type="link"
+          type="primary"
           onClick={() => {
             navigate(RoutePath.Dashboard);
           }}
         >
-          Return to dashboard
+          Return To Dashboard
         </Button>
       </Flex>
       <Table
@@ -88,6 +126,14 @@ function TransactionsTable() {
         dataSource={transactionStore.transactions}
         columns={columns}
         showSorterTooltip={{ placement: "bottom" }}
+      />
+      <TransactionModal
+        visible={isTransactionModalVisible}
+        mode={transactionModalMode}
+        values={selectedRecord}
+        onCancel={() => {
+          setIsTransactionModalVisible(false);
+        }}
       />
     </>
   );
