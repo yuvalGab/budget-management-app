@@ -1,15 +1,14 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { Button, Flex, Table, Tooltip, Typography } from "antd";
+import { Button, Flex, Space, Table, Typography } from "antd";
 import { Transaction, TransactionType } from "shared";
 import transactionStore from "../store/transaction";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { RoutePath } from "./AppRouter";
-import { PlusOutlined } from "@ant-design/icons";
 import TransactionModal, { TransactionModalMode } from "./TransactionModal";
 
-const { Text } = Typography;
+const { Title, Text } = Typography;
 
 function TransactionsTable() {
   const navigate = useNavigate();
@@ -19,6 +18,10 @@ function TransactionsTable() {
     TransactionModalMode.Create
   );
   const [selectedRecord, setSelectedRecord] = useState();
+
+  useEffect(() => {
+    transactionStore.getTransactions();
+  }, []);
 
   const openTransactionModal = useCallback(
     (mode: TransactionModalMode, record?: Transaction) => {
@@ -47,6 +50,23 @@ function TransactionsTable() {
             {value}
           </Button>
         ),
+      },
+      {
+        key: "type",
+        dataIndex: "type",
+        title: "Type",
+        sorter: (a: Transaction, b: Transaction): number => a.amount - b.amount,
+        render: (value: number, record: Transaction) => {
+          return (
+            <Text
+              style={{
+                color: record.type === TransactionType.Income ? "green" : "red",
+              }}
+            >
+              {value === TransactionType.Expense ? "Expense" : "Income"}
+            </Text>
+          );
+        },
       },
       {
         key: "amount",
@@ -78,16 +98,16 @@ function TransactionsTable() {
       {
         title: "Actions",
         render: (_value: unknown, record: Transaction) => (
-          <>
+          <Space>
             <Button
               onClick={() => {
                 openTransactionModal(TransactionModalMode.Update, record);
               }}
             >
-              Edit
+              Update
             </Button>
             <Button>Delete</Button>
-          </>
+          </Space>
         ),
       },
     ],
@@ -101,25 +121,25 @@ function TransactionsTable() {
         align="center"
         style={{ margin: "16px 0px" }}
       >
-        <Tooltip title="Create transaction" placement="right">
+        <Title level={3}>Transactions</Title>
+        <Space>
           <Button
             type="primary"
-            shape="circle"
-            size="large"
-            icon={<PlusOutlined />}
             onClick={() => {
               openTransactionModal(TransactionModalMode.Create);
             }}
-          />
-        </Tooltip>
-        <Button
-          type="primary"
-          onClick={() => {
-            navigate(RoutePath.Dashboard);
-          }}
-        >
-          Return To Dashboard
-        </Button>
+          >
+            Create Transaction
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => {
+              navigate(RoutePath.Dashboard);
+            }}
+          >
+            Return To Dashboard
+          </Button>
+        </Space>
       </Flex>
       <Table
         rowKey={"id"}

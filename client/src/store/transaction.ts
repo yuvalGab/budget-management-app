@@ -41,14 +41,14 @@ class TransactionStore {
     }
   }
 
-  async addTransaction(transaction: Omit<Transaction, "id">) {
+  async createTransaction(transaction: Omit<Transaction, "id">) {
     try {
       const res = await apiClient.post(TRANSACTION_PATH, transaction);
       runInAction(() => {
         this.transactions.push({ ...transaction, id: res.data.id });
       });
     } catch (error) {
-      console.error("Failed to add transaction:", error);
+      console.error("Failed to create transaction:", error);
     }
   }
 

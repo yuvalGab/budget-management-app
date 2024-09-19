@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Modal, Form, Input, Select, DatePicker } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { isValid as isDateFnsValid } from "date-fns";
 import dayjs, { Dayjs } from "dayjs";
 import { Transaction, TransactionType } from "shared";
+import { observer } from "mobx-react-lite";
+import transactionStore from "../store/transaction";
 
 export enum TransactionModalMode {
   Create,
@@ -20,7 +22,7 @@ interface TransactionModalProps {
 const defaultValues: Transaction = {
   name: "",
   info: "",
-  amount: 0,
+  amount: 1,
   date: new Date().toISOString(),
   type: TransactionType.Income,
 };
@@ -53,16 +55,31 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
     }
   }, [values, reset]);
 
-  const onFormSubmit = (values: Transaction) => {
-    console.log(values);
-    // TBD
-    // onSubmit({
-    //   ...values,
-    //   date: values.date
-    //     ? new Date(values.date).toISOString()
-    //     : new Date().toISOString(),
-    // });
-  };
+  const onFormSubmit = useCallback(
+    (values: Transaction) => {
+      const formattedValues = {
+        ...values,
+        amount: +values.amount,
+        date: values.date
+          ? new Date(values.date).toISOString()
+          : new Date().toISOString(),
+      };
+
+      switch (mode) {
+        case TransactionModalMode.Create:
+          transactionStore.createTransaction(formattedValues).then(onCancel);
+          return;
+        case TransactionModalMode.Update:
+          transactionStore
+            .updateTransaction(formattedValues.id!, formattedValues)
+            .then(onCancel);
+          return;
+        default:
+          return;
+      }
+    },
+    [mode]
+  );
 
   return (
     <Modal
@@ -161,4 +178,4 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
   );
 };
 
-export default TransactionModal;
+export default observer(TransactionModal);
