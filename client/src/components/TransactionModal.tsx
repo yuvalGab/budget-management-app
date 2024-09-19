@@ -91,7 +91,10 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
       open={visible}
       onCancel={onCancel}
       onOk={handleSubmit(onFormSubmit)}
-      okButtonProps={{ disabled: !isValid || isSubmitting }}
+      okButtonProps={{
+        disabled: !isValid || isSubmitting,
+        loading: transactionStore.loading,
+      }}
     >
       <Form layout="vertical">
         <Form.Item

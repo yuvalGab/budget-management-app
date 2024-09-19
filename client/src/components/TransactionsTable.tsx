@@ -106,7 +106,13 @@ function TransactionsTable() {
             >
               Update
             </Button>
-            <Button>Delete</Button>
+            <Button
+              onClick={() => {
+                transactionStore.deleteTransaction(record.id!);
+              }}
+            >
+              Delete
+            </Button>
           </Space>
         ),
       },
@@ -116,12 +122,10 @@ function TransactionsTable() {
 
   return (
     <>
-      <Flex
-        justify="space-between"
-        align="center"
-        style={{ margin: "16px 0px" }}
-      >
-        <Title level={3}>Transactions</Title>
+      <Flex justify="space-between" align="center" style={{ marginBottom: 16 }}>
+        <Title level={3} style={{ margin: 0 }}>
+          Transactions
+        </Title>
         <Space>
           <Button
             type="primary"

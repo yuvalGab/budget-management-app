@@ -43,10 +43,8 @@ class TransactionStore {
 
   async createTransaction(transaction: Omit<Transaction, "id">) {
     try {
-      const res = await apiClient.post(TRANSACTION_PATH, transaction);
-      runInAction(() => {
-        this.transactions.push({ ...transaction, id: res.data.id });
-      });
+      await apiClient.post(TRANSACTION_PATH, transaction);
+      await this.getTransactions();
     } catch (error) {
       console.error("Failed to create transaction:", error);
     }
@@ -55,17 +53,7 @@ class TransactionStore {
   async updateTransaction(id: number, updatedTransaction: Transaction) {
     try {
       await apiClient.put(`${TRANSACTION_PATH}/${id}`, updatedTransaction);
-      runInAction(() => {
-        const index = this.transactions.findIndex(
-          (transaction) => transaction.id === id
-        );
-        if (index !== -1) {
-          this.transactions[index] = {
-            ...this.transactions[index],
-            ...updatedTransaction,
-          };
-        }
-      });
+      await this.getTransactions();
     } catch (error) {
       console.error("Failed to update transaction:", error);
     }
@@ -74,11 +62,7 @@ class TransactionStore {
   async deleteTransaction(id: number) {
     try {
       await apiClient.delete(`${TRANSACTION_PATH}/${id}`);
-      runInAction(() => {
-        this.transactions = this.transactions.filter(
-          (transaction) => transaction.id !== id
-        );
-      });
+      await this.getTransactions();
     } catch (error) {
       console.error("Failed to delete transaction:", error);
     }

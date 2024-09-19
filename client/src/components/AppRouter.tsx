@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import Dashboard from "../pages/Dashboard";
 import Transactions from "../pages/Transactions";
-import TransactionDetail from "../pages/TransactionDetail";
 
 export enum RoutePath {
   Dashboard = "/",
@@ -18,11 +17,7 @@ function AppRouter() {
     <Router>
       <Routes>
         <Route path={RoutePath.Dashboard} element={<Dashboard />} />
-        <Route path={RoutePath.Transactions} element={<Transactions />} />
-        <Route
-          path={`/${RoutePath.Transactions}/:id`}
-          element={<TransactionDetail />}
-        />
+        <Route path={`${RoutePath.Transactions}/*`} element={<Transactions />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

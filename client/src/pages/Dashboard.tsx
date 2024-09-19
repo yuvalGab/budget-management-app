@@ -11,9 +11,10 @@ function Dashboard() {
 
   return (
     <Page>
-      <Title level={3}>Transaction Statistics</Title>
-      <TransactionStats />
-      <Flex justify="center">
+      <Flex justify="space-between" align="center" style={{ margin: 16 }}>
+        <Title level={3} style={{ margin: 0 }}>
+          Transaction Statistics
+        </Title>
         <Button
           type="primary"
           style={{ margin: 16 }}
@@ -24,6 +25,7 @@ function Dashboard() {
           Show Transactions
         </Button>
       </Flex>
+      <TransactionStats />
     </Page>
   );
 }

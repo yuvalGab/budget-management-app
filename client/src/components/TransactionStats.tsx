@@ -11,7 +11,7 @@ function TransactionStats() {
   return (
     <Row gutter={[16, 16]}>
       <Col xs={24} md={8}>
-        <Card title="Total Income">
+        <Card title="Total Income" style={{ color: "green" }}>
           ${transactionStore.totalIncome.toFixed(2)}
         </Card>
       </Col>
