@@ -2,7 +2,7 @@ import { observer } from "mobx-react-lite";
 import { Row, Col, Card } from "antd";
 import transactionStore from "../store/transaction";
 
-const TransactionStats = observer(() => {
+function TransactionStats() {
   return (
     <Row gutter={[16, 16]}>
       <Col xs={24} md={8}>
@@ -22,6 +22,6 @@ const TransactionStats = observer(() => {
       </Col>
     </Row>
   );
-});
+}
 
-export default TransactionStats;
+export default observer(TransactionStats);

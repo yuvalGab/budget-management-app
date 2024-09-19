@@ -8,7 +8,6 @@ import Dashboard from "../pages/Dashboard";
 import Transactions from "../pages/Transactions";
 import TransactionDetail from "../pages/TransactionDetail";
 
-// eslint-disable-next-line react-refresh/only-export-components
 export enum RoutePath {
   Dashboard = "/",
   Transactions = "/transactions",
