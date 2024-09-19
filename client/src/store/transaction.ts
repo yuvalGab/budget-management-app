@@ -15,9 +15,9 @@ class TransactionStore {
   async getTransactions() {
     this.loading = true;
     try {
-      const response = await apiClient.get(TRANSACTION_PATH);
+      const res = await apiClient.get(TRANSACTION_PATH);
       runInAction(() => {
-        this.transactions = response.data;
+        this.transactions = res.data;
         this.loading = false;
       });
     } catch (error) {
@@ -29,9 +29,9 @@ class TransactionStore {
   async getTransactionById(id: number) {
     this.loading = true;
     try {
-      const response = await apiClient.get(`${TRANSACTION_PATH}/${id}`);
+      const res = await apiClient.get(`${TRANSACTION_PATH}/${id}`);
       runInAction(() => {
-        const transaction = response.data;
+        const transaction = res.data;
         this.transactions = [
           transaction,
           ...this.transactions.filter((t) => t.id !== id),
@@ -46,16 +46,16 @@ class TransactionStore {
 
   async addTransaction(transaction: Omit<Transaction, "id">) {
     try {
-      const response = await apiClient.post(TRANSACTION_PATH, transaction);
+      const res = await apiClient.post(TRANSACTION_PATH, transaction);
       runInAction(() => {
-        this.transactions.push({ ...transaction, id: response.data.id });
+        this.transactions.push({ ...transaction, id: res.data.id });
       });
     } catch (error) {
       console.error("Failed to add transaction:", error);
     }
   }
 
-  async editTransaction(id: number, updatedTransaction: Partial<Transaction>) {
+  async updateTransaction(id: number, updatedTransaction: Transaction) {
     try {
       await apiClient.put(`${TRANSACTION_PATH}/${id}`, updatedTransaction);
       runInAction(() => {
@@ -70,7 +70,7 @@ class TransactionStore {
         }
       });
     } catch (error) {
-      console.error("Failed to edit transaction:", error);
+      console.error("Failed to update transaction:", error);
     }
   }
 

@@ -18,6 +18,7 @@ db.schema.hasTable(Tables.Transactions).then((exists) => {
       .createTable(Tables.Transactions, (table) => {
         table.increments("id").primary();
         table.string("name").notNullable();
+        table.string("info").nullable();
         table.decimal("amount").notNullable();
         table.date("date").notNullable();
         table.integer("type").notNullable();

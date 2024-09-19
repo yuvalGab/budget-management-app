@@ -19,7 +19,7 @@ export const createTransaction = async (
 
 export const updateTransaction = async (
   id: number,
-  transaction: Partial<Transaction>
+  transaction: Transaction
 ): Promise<void> => {
   await db<Transaction>(Tables.Transactions).where({ id }).update(transaction);
 };

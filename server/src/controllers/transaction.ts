@@ -38,7 +38,7 @@ export const createTransaction = async (req: Request, res: Response) => {
 export const updateTransaction = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const updatedTransaction: Partial<Transaction> = req.body;
+    const updatedTransaction: Transaction = req.body;
     await transactionsService.updateTransaction(Number(id), updatedTransaction);
     res.status(200).send();
   } catch (error) {
