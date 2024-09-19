@@ -1,11 +1,12 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import apiClient from "../utils/apiClient";
-import { Transaction } from "shared";
+import { Transaction, TransactionType } from "shared";
 
 const TRANSACTION_PATH = "/transactions";
 
 class TransactionStore {
   transactions: Transaction[] = [];
+  currentTransaction: Transaction | null = null;
   loading = false;
 
   constructor() {
@@ -31,11 +32,7 @@ class TransactionStore {
     try {
       const res = await apiClient.get(`${TRANSACTION_PATH}/${id}`);
       runInAction(() => {
-        const transaction = res.data;
-        this.transactions = [
-          transaction,
-          ...this.transactions.filter((t) => t.id !== id),
-        ];
+        this.currentTransaction = res.data;
         this.loading = false;
       });
     } catch (error) {
@@ -85,6 +82,22 @@ class TransactionStore {
     } catch (error) {
       console.error("Failed to delete transaction:", error);
     }
+  }
+
+  get totalIncome(): number {
+    return this.transactions
+      .filter((t) => t.type === TransactionType.Income)
+      .reduce((sum, transaction) => sum + transaction.amount, 0);
+  }
+
+  get totalExpenses(): number {
+    return this.transactions
+      .filter((t) => t.type === TransactionType.Expense)
+      .reduce((sum, transaction) => sum + transaction.amount, 0);
+  }
+
+  get remainingBalance(): number {
+    return this.totalIncome - this.totalExpenses;
   }
 }
 
