@@ -88,6 +88,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
           ? "Update Transaction"
           : "Create Transaction"
       }
+      destroyOnClose
       open={visible}
       onCancel={onCancel}
       onOk={handleSubmit(onFormSubmit)}
