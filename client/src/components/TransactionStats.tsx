@@ -21,7 +21,12 @@ function TransactionStats() {
         </Card>
       </Col>
       <Col xs={24} md={8}>
-        <Card title="Remaining Balance">
+        <Card
+          title="Remaining Balance"
+          style={{
+            color: transactionStore.remainingBalance > 0 ? "green" : "red",
+          }}
+        >
           {transactionStore.remainingBalance.toFixed(2)}
         </Card>
       </Col>

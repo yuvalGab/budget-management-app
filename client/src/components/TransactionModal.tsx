@@ -39,21 +39,21 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
     reset,
     formState: { isValid, isSubmitting, errors },
   } = useForm<Transaction>({
-    defaultValues: values || defaultValues,
     mode: "onChange",
   });
 
   useEffect(() => {
-    if (values) {
+    if (visible) {
       reset({
+        ...defaultValues,
         ...values,
         date:
-          values.date && isDateFnsValid(new Date(values.date))
+          values?.date && isDateFnsValid(new Date(values.date))
             ? values.date
             : undefined,
       });
     }
-  }, [values, reset]);
+  }, [values, visible, reset]);
 
   const onFormSubmit = useCallback(
     (values: Transaction) => {
@@ -78,20 +78,20 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
           return;
       }
     },
-    [mode]
+    [mode, onCancel]
   );
 
   return (
     <Modal
+      destroyOnClose
+      open={visible}
+      onCancel={onCancel}
+      onOk={handleSubmit(onFormSubmit)}
       title={
         mode === TransactionModalMode.Update
           ? "Update Transaction"
           : "Create Transaction"
       }
-      destroyOnClose
-      open={visible}
-      onCancel={onCancel}
-      onOk={handleSubmit(onFormSubmit)}
       okButtonProps={{
         disabled: !isValid || isSubmitting,
         loading: transactionStore.loading,
@@ -148,6 +148,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
             render={({ field }) => (
               <DatePicker
                 {...field}
+                style={{width: '100%'}}
                 value={field.value ? dayjs(field.value) : null}
                 onChange={(date: Dayjs | null) => {
                   field.onChange(date ? date.toISOString() : "");
