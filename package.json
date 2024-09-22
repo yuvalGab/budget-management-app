@@ -6,7 +6,7 @@
     "install:shared": "cd shared && npm install",
     "install:server": "cd server && npm install",
     "install:client": "cd client && npm install",
-    "install:all": "npm run install:shared && npm run install:server && npm run install:client",
+    "install:all": "npm install && npm run install:shared && npm run install:server && npm run install:client",
     "build:shared": "cd shared && npm run build",
     "build:server": "cd server && npm run build",
     "build:client": "cd client && npm run build",
