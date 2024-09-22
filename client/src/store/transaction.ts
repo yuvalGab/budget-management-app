@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import apiClient from "../utils/apiClient";
 import { Transaction, TransactionType } from "shared";
+import { message } from "antd";
 
 const TRANSACTION_PATH = "/transactions";
 
@@ -22,8 +23,13 @@ class TransactionStore {
         this.loading = false;
       });
     } catch (error) {
-      console.error("Failed to get transactions:", error);
-      this.loading = false;
+      const errorMessage = "Failed to get transactions";
+      console.error(`${errorMessage}:`, error);
+      message.error(errorMessage);
+      runInAction(() => {
+        this.transactions = [];
+        this.loading = false;
+      });
     }
   }
 
@@ -36,8 +42,13 @@ class TransactionStore {
         this.loading = false;
       });
     } catch (error) {
-      console.error("Failed to get transaction:", error);
-      this.loading = false;
+      const errorMessage = "Failed to get transaction";
+      console.error(`${errorMessage}:`, error);
+      message.error(errorMessage);
+      runInAction(() => {
+        this.currentTransaction = null;
+        this.loading = false;
+      });
     }
   }
 
@@ -45,8 +56,11 @@ class TransactionStore {
     try {
       await apiClient.post(TRANSACTION_PATH, transaction);
       await this.getTransactions();
+      message.success("Transaction created successfully");
     } catch (error) {
-      console.error("Failed to create transaction:", error);
+      const errorMessage = "Failed to create transaction";
+      console.error(`${errorMessage}:`, error);
+      message.error(errorMessage);
     }
   }
 
@@ -54,8 +68,11 @@ class TransactionStore {
     try {
       await apiClient.put(`${TRANSACTION_PATH}/${id}`, updatedTransaction);
       await this.getTransactions();
+      message.success("Transaction updated successfully");
     } catch (error) {
-      console.error("Failed to update transaction:", error);
+      const errorMessage = "Failed to update transaction";
+      console.error(`${errorMessage}:`, error);
+      message.error(errorMessage);
     }
   }
 
@@ -63,8 +80,11 @@ class TransactionStore {
     try {
       await apiClient.delete(`${TRANSACTION_PATH}/${id}`);
       await this.getTransactions();
+      message.success("Transaction deleted successfully");
     } catch (error) {
-      console.error("Failed to delete transaction:", error);
+      const errorMessage = "Failed to delete transaction";
+      console.error(`${errorMessage}:`, error);
+      message.error(errorMessage);
     }
   }
 

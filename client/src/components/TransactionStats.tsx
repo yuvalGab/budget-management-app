@@ -12,17 +12,17 @@ function TransactionStats() {
     <Row gutter={[16, 16]}>
       <Col xs={24} md={8}>
         <Card title="Total Income" style={{ color: "green" }}>
-          ${transactionStore.totalIncome.toFixed(2)}
+          {transactionStore.totalIncome.toFixed(2)}
         </Card>
       </Col>
       <Col xs={24} md={8}>
         <Card title="Total Expenses" style={{ color: "red" }}>
-          ${transactionStore.totalExpenses.toFixed(2)}
+          {transactionStore.totalExpenses.toFixed(2)}
         </Card>
       </Col>
       <Col xs={24} md={8}>
         <Card title="Remaining Balance">
-          ${transactionStore.remainingBalance.toFixed(2)}
+          {transactionStore.remainingBalance.toFixed(2)}
         </Card>
       </Col>
     </Row>

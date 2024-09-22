@@ -2,7 +2,7 @@ import { Transaction } from "shared";
 import db, { TableName } from "../utils/db";
 
 export const getAllTransactions = async (): Promise<Transaction[]> => {
-  return db<Transaction>(TableName.Transactions).select("*");
+  return db<Transaction>(TableName.Transactions).select("*").orderBy('id', 'desc');
 };
 
 export const getTransactionById = async (
